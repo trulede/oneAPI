@@ -1,0 +1,8 @@
+{
+	"name": "oneAPI Basekit",
+	"build": {
+		"context": "..",
+		"dockerfile": "../Dockerfile"
+	},
+	"remoteUser": "ubuntu"
+}

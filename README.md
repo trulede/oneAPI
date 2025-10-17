@@ -8,15 +8,8 @@ Basic oneAPI setup and usage with VS Code and WSL.
 
 [Configure WSL 2 for GPU Workflows](https://www.intel.com/content/www/us/en/docs/oneapi/installation-guide-linux/2025-2/configure-wsl-2-for-gpu.html) (Ubuntu 24.04.2 LTS):
 
-```bash
-$ apt-get install -y gpg-agent wget
-$ echo 'deb [arch=amd64,i386 signed-by=/usr/share/keyrings/intel-graphics.gpg] https://repositories.intel.com/graphics/ubuntu jammy arc' |   sudo tee  /etc/apt/sources.list.d/intel.gpu.jammy.list
-$ sudo apt-get install -y   intel-opencl-icd intel-level-zero-gpu level-zero   intel-media-va-driver-non-free libmfx1 libmfxgen1 libvpl2   libegl-mesa0 libegl1-mesa libegl1-mesa-dev libgbm1 libgl1-mesa-dev libgl1-mesa-dri   libglapi-mesa libgles2-mesa-dev libglx-mesa0 libigdgmm12 libxatracker2 mesa-va-drivers   mesa-vdpau-drivers mesa-vulkan-drivers va-driver-all
-$ sudo apt update
-$ sudo apt-get install -y   libigc-dev   intel-igc-cm   libigdfcl-dev   libigfxcmrt-dev   level-zero-dev
-$ sudo apt-get install clinfo
-$ clinfo
-```
+> Note: See the Dockerfile for consolidated configuration commands.
+
 
 ### Containers
 
@@ -123,128 +116,37 @@ Successfully completed on device.
 
 ### clinfo
 
-<details>
-<summary>clinfo (from WSL prompt)</summary>
+#### clinfo from WSL
 
 ```bash
-$ clinfo
-Number of platforms                               1
-  Platform Name                                   Intel(R) OpenCL Graphics
-  Platform Vendor                                 Intel(R) Corporation
-  Platform Version                                OpenCL 3.0
-  Platform Profile                                FULL_PROFILE
-....
-  Platform Numeric Version                        0xc00000 (3.0.0)
-  Platform Extensions function suffix             INTEL
-  Platform Host timer resolution                  1ns
-  Platform External memory handle types           DMA buffer
-
-  Platform Name                                   Intel(R) OpenCL Graphics
-Number of devices                                 1
-  Device Name                                     Intel(R) Graphics [0x7d51]
-  Device Vendor                                   Intel(R) Corporation
-  Device Vendor ID                                0x8086
-  Device Version                                  OpenCL 3.0 NEO
-  Device UUID                                     8680517d-0300-0000-0002-000000000000
-  Driver UUID                                     32332e34-332e-3032-3736-343200000000
-  Valid Device LUID                               No
-  Device LUID                                     900b-b880fc7f0000
-  Device Node Mask                                0
-  Device Numeric Version                          0xc00000 (3.0.0)
-  Driver Version                                  23.43.027642
-  Device OpenCL C Version                         OpenCL C 1.2
-  Device OpenCL C all versions                    OpenCL C                                                         0x400000 (1.0.0)
-                                                  OpenCL C                                                         0x401000 (1.1.0)
-                                                  OpenCL C                                                         0x402000 (1.2.0)
-                                                  OpenCL C                                                         0xc00000 (3.0.0)
-  Device OpenCL C features                        __opencl_c_int64                                                 0xc00000 (3.0.0)
-....
-  Latest conformance test passed                  v2023-05-16-00
-  Device Type                                     GPU
-  Device PCI bus info (KHR)                       PCI-E, 0000:00:02.0
-  Device Profile                                  FULL_PROFILE
-  Device Available                                Yes
-  Compiler Available                              Yes
-  Linker Available                                Yes
-  Max compute units                               128
-  Max clock frequency                             2350MHz
-  Device IP (Intel)                               0x3128004 (12.296.4)
-  Device ID (Intel)                               32081
-  Slices (Intel)                                  2
-  Sub-slices per slice (Intel)                    8
-  EUs per sub-slice (Intel)                       8
-  Threads per EU (Intel)                          8
-  Feature capabilities (Intel)                    DP4A
-  Device Partition                                (core)
-    Max number of sub-devices                     0
-    Supported partition types                     None
-    Supported affinity domains                    (n/a)
-  Max work item dimensions                        3
-  Max work item sizes                             1024x1024x1024
-  Max work group size                             1024
-  Preferred work group size multiple (device)     64
-....
-NULL platform behavior
-  clGetPlatformInfo(NULL, CL_PLATFORM_NAME, ...)  Intel(R) OpenCL Graphics
-  clGetDeviceIDs(NULL, CL_DEVICE_TYPE_ALL, ...)   Success [INTEL]
-  clCreateContext(NULL, ...) [default]            Success [INTEL]
-  clCreateContextFromType(NULL, CL_DEVICE_TYPE_DEFAULT)  Success (1)
-    Platform Name                                 Intel(R) OpenCL Graphics
-    Device Name                                   Intel(R) Graphics [0x7d51]
-  clCreateContextFromType(NULL, CL_DEVICE_TYPE_CPU)  No devices found in platform
-  clCreateContextFromType(NULL, CL_DEVICE_TYPE_GPU)  Success (1)
-    Platform Name                                 Intel(R) OpenCL Graphics
-    Device Name                                   Intel(R) Graphics [0x7d51]
-  clCreateContextFromType(NULL, CL_DEVICE_TYPE_ACCELERATOR)  No devices found in platform
-  clCreateContextFromType(NULL, CL_DEVICE_TYPE_CUSTOM)  No devices found in platform
-  clCreateContextFromType(NULL, CL_DEVICE_TYPE_ALL)  Success (1)
-    Platform Name                                 Intel(R) OpenCL Graphics
-    Device Name                                   Intel(R) Graphics [0x7d51]
-
-ICD loader properties
-  ICD loader Name                                 OpenCL ICD Loader
-  ICD loader Vendor                               OCL Icd free software
-  ICD loader Version                              2.3.2
-  ICD loader Profile                              OpenCL 3.0
+$ clinfo -l
+Platform #0: Intel(R) OpenCL Graphics
+ `-- Device #0: Intel(R) Graphics [0x7d51]
 ```
 
-<details>
-
-### sycl-ls
-
-<details>
-<summary>sycl-ls --verbose (in Docker container)</summary>
+#### clinfo from Docker
 
 ```bash
-$ sycl-ls --verbose
-[opencl:cpu][opencl:0] Intel(R) OpenCL, Intel(R) Core(TM) Ultra 9 285H OpenCL 3.0 (Build 0) [2025.20.8.0.06_160000]
+# WSL Host
+$ docker run -it --rm --device=/dev/dxg --volume /usr/lib/wsl:/usr/lib/wsl intel/oneapi-runtime
 
-Platforms: 1
-Platform [#1]:
-    Version  : OpenCL 3.0 LINUX
-    Name     : Intel(R) OpenCL
-    Vendor   : Intel(R) Corporation
-    Devices  : 1
-        Device [#0]:
-        Type              : cpu
-        Version           : OpenCL 3.0 (Build 0)
-        Name              : Intel(R) Core(TM) Ultra 9 285H
-        Vendor            : Intel(R) Corporation
-        Driver            : 2025.20.8.0.06_160000
-        UUID              : ...
-        DeviceID          : 788050
-        Num SubDevices    : 0
-        Num SubSubDevices : 0
-        Aspects           : cpu fp16 fp64 online_compiler online_linker queue_profiling usm_device_allocations usm_host_allocations usm_shared_allocations usm_system_allocations ext_intel_gpu_slices ext_intel_gpu_subslices_per_slice ext_intel_gpu_eu_count_per_subslice usm_atomic_host_allocations usm_atomic_shared_allocations atomic64 ext_intel_device_info_uuid ext_oneapi_srgb ext_oneapi_native_assert ext_intel_gpu_hw_threads_per_eu ext_oneapi_cuda_async_barrier ext_intel_device_id ext_intel_legacy_image ext_oneapi_ballot_group ext_oneapi_fixed_size_group ext_oneapi_opportunistic_group ext_oneapi_tangle_group ext_oneapi_limited_graph ext_oneapi_private_alloca ext_oneapi_atomic16 ext_oneapi_virtual_functions
-        info::device::sub_group_sizes: 4 8 16 32 64
-        Architecture: x86_64
-default_selector()      : cpu, Intel(R) OpenCL, Intel(R) Core(TM) Ultra 9 285H OpenCL 3.0 (Build 0) [2025.20.8.0.06_160000]
-accelerator_selector()  : No device of requested type available. Please chec...
-cpu_selector()          : cpu, Intel(R) OpenCL, Intel(R) Core(TM) Ultra 9 285H OpenCL 3.0 (Build 0) [2025.20.8.0.06_160000]
-gpu_selector()          : No device of requested type available. Please chec...
-custom_selector(gpu)    : No device of requested type available. Please chec...
-custom_selector(cpu)    : cpu, Intel(R) OpenCL, Intel(R) Core(TM) Ultra 9 285H OpenCL 3.0 (Build 0) [2025.20.8.0.06_160000]
-custom_selector(acc)    : No device of requested type available. Please chec...
+# In Container
+$ apt update; apt install -y clinfo
+$ clinfo -l
+Platform #0: Intel(R) OpenCL Graphics
+ `-- Device #0: Intel(R) Graphics [0x7d51]
+Platform #1: Intel(R) OpenCL
+ `-- Device #0: Intel(R) Core(TM) Ultra 9 285H
 ```
 
-</details>
+#### clinfo from Devcontainer/Workspace prompt
+
+> __Hint:__ See `devcontainer.json` for mount and device configuration.
+
+```bash
+$ clinfo -l
+Platform #0: Intel(R) OpenCL
+ `-- Device #0: Intel(R) Core(TM) Ultra 9 285H
+Platform #1: Intel(R) OpenCL Graphics
+ `-- Device #0: Intel(R) Graphics [0x7d51]
+```

@@ -4,5 +4,15 @@
 		"context": "..",
 		"dockerfile": "../Dockerfile"
 	},
+	"mounts": [
+		{
+			"source": "/usr/lib/wsl",
+			"target": "/usr/lib/wsl",
+			"type": "bind"
+		}
+	],
+	"runArgs": [
+		"--device=/dev/dxg"
+	],
 	"remoteUser": "ubuntu"
 }

@@ -69,6 +69,75 @@ Array size: 10000
 Successfully completed on device. 
 ```
 
+### Vector Add
+
+```bash
+$ . /opt/intel/oneapi/setvars.sh
+$ cd examples/vector-add/
+
+# Build
+$ mkdir build; cd build
+$ cmake .. -DUSM=1
+$ make cpu-gpu
+
+# Run
+$ ./vector-add-usm 
+Running on device: Intel(R) Graphics [0x7d51]
+Vector size: 10000
+[0]: 0 + 0 = 0
+[1]: 1 + 1 = 2
+[2]: 2 + 2 = 4
+...
+[9999]: 9999 + 9999 = 19998
+Vector add successfully completed on device.
+```
+
+### Prefix Add
+
+```bash
+$ . /opt/intel/oneapi/setvars.sh
+$ cd examples/PrefixSum/
+
+# Build
+$ mkdir build; cd build
+$ cmake ..
+$ make
+
+# Run
+$ ./PrefixSum 2 42
+Sequence size: 4, seed: 42
+Num iteration: 2
+Device: Intel(R) Graphics [0x7d51]
+Elapsed time: 0.0139848 s
+
+Success!
+```
+
+### GPU Opt Guide
+
+```bash
+$ . /opt/intel/oneapi/setvars.sh
+$ cd examples/GPU-Opt-Guide
+
+# Build
+$ mkdir build; cd build
+$ cmake ..
+$ make
+
+# Run
+$ cd multiple-queue-submission/
+$ make test
+Running tests...
+Test project /workspaces/oneAPI/examples/GPU-Opt-Guide/build/multiple-queue-submission
+    Start 1: multi-queue-heavy-kernel
+1/2 Test #1: multi-queue-heavy-kernel .........   Passed    2.09 sec
+    Start 2: multi-queue-light-kernel
+2/2 Test #2: multi-queue-light-kernel .........   Passed    0.26 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =   2.36 sec
+```
 
 ## System Setup
 

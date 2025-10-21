@@ -1,0 +1,5 @@
+add_example(cpu_only)
+add_example(gpu_only)
+add_example(hybrid_blocking)
+add_example(hybrid_non_blocking)
+add_fortran_example(hybrid_non_blocking_f)
